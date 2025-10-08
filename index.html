@@ -68,7 +68,7 @@
     </div>
   </div>
 
-  <footer class="mx-auto max-w-4xl px-4 pb-10 pt-4 text-xs text-slate-500">
+  <footer class="mx-auto max-w-4xl px-4 pb-10 pt-4 text-xs text-slate-500">0
     Készült szeretettel Tailwind CSS-sel. Teljesen kliensoldali — tökéletes GitHub Pages-hez.
   </footer>
 
@@ -83,92 +83,128 @@
       { title: "Milyen sportot űzök, és mit csinálok bárkivel, aki bántani akarna téged?", description: "Ha valaki bántani merne téged, tudd, hogy azonnal közbelépek érted. Milyen sportban jártas a te harcos szerelmed?",options: ["Balett", "Box", "Karate", "Foci"],correctIndex: 1,reward: "Sztárbox-jegyek 😜"}
     ];
 
-    const state = { idx: 0, answered: 0, correct: 0, selections: Array(QUESTIONS.length).fill(null) };
-    const cardHost = document.getElementById('cardHost');
-    const scoreEl = document.getElementById('score');
-    const progressEl = document.getElementById('progressBar');
-    const progressLabel = document.getElementById('progressLabel');
-    const modalEl = document.getElementById('modal');
-    const modalBackdrop = document.getElementById('modalBackdrop');
-    const modalTitle = document.getElementById('modalTitle');
-    const modalMsg = document.getElementById('modalMessage');
-    const modalIcon = document.getElementById('modalIcon');
-    const closeModalBtn = document.getElementById('closeModal');
-    const summarySection = document.getElementById('summary');
-    const finalText = document.getElementById('finalText');
-    const restartBtn = document.getElementById('restartBtn');
-    const reviewBtn = document.getElementById('reviewBtn');
-    const reviewList = document.getElementById('reviewList');
-    const reviewItems = document.getElementById('reviewItems');
+      const state = { idx: 0, answered: 0, correct: 0, selections: Array(QUESTIONS.length).fill(null) };
+  const cardHost = document.getElementById('cardHost');
+  const scoreEl = document.getElementById('score');
+  const progressEl = document.getElementById('progressBar');
+  const progressLabel = document.getElementById('progressLabel');
+  const modalEl = document.getElementById('modal');
+  const modalBackdrop = document.getElementById('modalBackdrop');
+  const modalTitle = document.getElementById('modalTitle');
+  const modalMsg = document.getElementById('modalMessage');
+  const modalIcon = document.getElementById('modalIcon');
+  const closeModalBtn = document.getElementById('closeModal');
+  const summarySection = document.getElementById('summary');
+  const finalText = document.getElementById('finalText');
+  const restartBtn = document.getElementById('restartBtn');
+  const reviewBtn = document.getElementById('reviewBtn');
+  const reviewList = document.getElementById('reviewList');
+  const reviewItems = document.getElementById('reviewItems');
 
-    function updateHeader() {
-      scoreEl.textContent = `Pontszám: ${state.correct}/${state.answered}`;
-      const pct = (state.answered / QUESTIONS.length) * 100;
-      progressEl.style.width = `${pct}%`;
-      progressLabel.textContent = `${state.answered} / ${QUESTIONS.length} megválaszolva`;
-    }
+  let timerInterval = null;
+  const QUESTION_TIME = 10; // seconds
 
-    function createCard(q, index) {
-      const wrapper = document.createElement('section');
-      wrapper.className = 'card card-enter rounded-2xl border border-slate-200 bg-white p-6 md:p-8 shadow-sm';
-      wrapper.innerHTML = `
-        <div class="flex items-center justify-between mb-4">
-          <span class="text-xs font-medium tracking-wider text-indigo-600 uppercase">Kérdés ${index + 1} / ${QUESTIONS.length}</span>
-          <span class="text-xs text-slate-500">Válaszd ki a helyeset →</span>
+  function updateHeader() {
+    scoreEl.textContent = `Pontszám: ${state.correct}/${state.answered}`;
+    const pct = (state.answered / QUESTIONS.length) * 100;
+    progressEl.style.width = `${pct}%`;
+    progressLabel.textContent = `${state.answered} / ${QUESTIONS.length} megválaszolva`;
+  }
+
+  function createCard(q, index) {
+    const wrapper = document.createElement('section');
+    wrapper.className = 'card card-enter rounded-2xl border border-slate-200 bg-white p-6 md:p-8 shadow-sm';
+
+    wrapper.innerHTML = `
+      <div class="flex items-center justify-between mb-4">
+        <span class="text-xs font-medium tracking-wider text-indigo-600 uppercase">
+          Kérdés ${index + 1} / ${QUESTIONS.length}
+        </span>
+        <span id="countdown" class="text-xs text-slate-500">⏳ 10s</span>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
+        <div>
+          <h2 class="text-xl md:text-2xl font-semibold">${q.title}</h2>
+          <p class="mt-3 text-slate-600 whitespace-pre-line">${q.description}</p>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-          <div>
-            <h2 class="text-xl md:text-2xl font-semibold">${q.title}</h2>
-            <p class="mt-3 text-slate-600 whitespace-pre-line">${q.description}</p>
+        <div class="md:pl-6 md:border-l md:border-slate-200 flex flex-col gap-3">
+          <label class="text-sm font-medium">Válassz</label>
+          <select id="answer" class="w-full rounded-xl border-slate-300 focus:border-indigo-500 focus:ring-indigo-500">
+            <option value="" disabled selected>Válassz...</option>
+            ${q.options.map((opt, i) => `<option value="${i}">${opt}</option>`).join('')}
+          </select>
+          <button id="skip" class="self-start rounded-xl px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50">Kihagyás</button>
+          <div class="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
+            <div id="timeBar" class="h-full bg-indigo-500 w-full transition-[width] duration-1000 ease-linear"></div>
           </div>
-          <div class="md:pl-6 md:border-l md:border-slate-200 flex flex-col gap-3">
-            <label class="text-sm font-medium">Válassz</label>
-            <select id="answer" class="w-full rounded-xl border-slate-300 focus:border-indigo-500 focus:ring-indigo-500">
-              <option value="" disabled selected>Válassz...</option>
-              ${q.options.map((opt, i) => `<option value="${i}">${opt}</option>`).join('')}
-            </select>
-            <button id="skip" class="self-start rounded-xl px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50">Kihagyás</button>
-          </div>
-        </div>`;
+        </div>
+      </div>`;
 
-      const answerSel = wrapper.querySelector('#answer');
-      const skipBtn = wrapper.querySelector('#skip');
-      answerSel.addEventListener('change', (e) => {
-        const chosenIndex = Number(e.target.value);
-        state.selections[state.idx] = chosenIndex;
-        const correct = chosenIndex === q.correctIndex;
-        if (correct) state.correct += 1;
-        state.answered += 1;
-        updateHeader();
-        showModal(correct, q.options[q.correctIndex], q.reward);
-      });
-      skipBtn.addEventListener('click', () => {
+    const answerSel = wrapper.querySelector('#answer');
+    const skipBtn = wrapper.querySelector('#skip');
+    const countdownEl = wrapper.querySelector('#countdown');
+    const timeBar = wrapper.querySelector('#timeBar');
+
+    let remaining = QUESTION_TIME;
+
+    function updateTimer() {
+      remaining--;
+      countdownEl.textContent = `⏳ ${remaining}s`;
+      timeBar.style.width = `${(remaining / QUESTION_TIME) * 100}%`;
+
+      if (remaining <= 0) {
+        clearInterval(timerInterval);
         state.selections[state.idx] = null;
         state.answered += 1;
         updateHeader();
         showModal(null, q.options[q.correctIndex], q.reward);
-      });
-      requestAnimationFrame(() => wrapper.classList.add('card-enter-active'));
-      return wrapper;
+      }
     }
 
-    function teardownCard(node) {
-      return new Promise((resolve) => {
-        node.classList.remove('card-enter', 'card-enter-active');
-        node.classList.add('card-exit');
-        requestAnimationFrame(() => {
-          node.classList.add('card-exit-active');
-          setTimeout(() => { node.remove(); resolve(); }, 220);
-        });
-      });
-    }
+    timerInterval = setInterval(updateTimer, 1000);
 
-    function renderQuestion() {
-      cardHost.innerHTML = '';
-      const q = QUESTIONS[state.idx];
-      const card = createCard(q, state.idx);
-      cardHost.appendChild(card);
-    }
+    answerSel.addEventListener('change', (e) => {
+      clearInterval(timerInterval);
+      const chosenIndex = Number(e.target.value);
+      state.selections[state.idx] = chosenIndex;
+      const correct = chosenIndex === q.correctIndex;
+      if (correct) state.correct += 1;
+      state.answered += 1;
+      updateHeader();
+      showModal(correct, q.options[q.correctIndex], q.reward);
+    });
+
+    skipBtn.addEventListener('click', () => {
+      clearInterval(timerInterval);
+      state.selections[state.idx] = null;
+      state.answered += 1;
+      updateHeader();
+      showModal(null, q.options[q.correctIndex], q.reward);
+    });
+
+    requestAnimationFrame(() => wrapper.classList.add('card-enter-active'));
+    return wrapper;
+  }
+
+  function teardownCard(node) {
+    return new Promise((resolve) => {
+      node.classList.remove('card-enter', 'card-enter-active');
+      node.classList.add('card-exit');
+      requestAnimationFrame(() => {
+        node.classList.add('card-exit-active');
+        setTimeout(() => { node.remove(); resolve(); }, 220);
+      });
+    });
+  }
+
+  function renderQuestion() {
+    clearInterval(timerInterval);
+    cardHost.innerHTML = '';
+    const q = QUESTIONS[state.idx];
+    const card = createCard(q, state.idx);
+    cardHost.appendChild(card);
+  }
+
 
     function showModal(correct, correctAnswer, reward) {
       let title = 'Szép próbálkozás!';
@@ -178,6 +214,9 @@
         title = 'Helyes válasz!';
         icon = '✅';
         message = 'Gratulálok, eltaláltad!';
+        if (reward) {
+        message += `\n\n🎁 Ajándékod: ${reward}`;
+      }
       } else if (correct === false) {
         title = 'Rossz válasz';
         icon = '❌';
@@ -187,9 +226,7 @@
         icon = '⏭️';
         message = `A helyes válasz: ${correctAnswer}`;
       }
-      if (reward) {
-        message += `\n\n🎁 Ajándékod: ${reward}`;
-      }
+      
       modalTitle.textContent = title;
       modalMsg.textContent = message;
       modalIcon.textContent = icon;
