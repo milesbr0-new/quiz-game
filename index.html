@@ -1,19 +1,16 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="hu">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Interactive Quiz</title>
+  <title>Interaktív Kvíz</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <meta name="description" content="A clean, responsive, 7-question quiz with dropdown answers, skip button, modal feedback, progress bar, and score tracking. 100% client-side and GitHub Pages ready." />
+  <meta name="description" content="Egy 7 kérdéses, modern, magyar nyelvű interaktív kvíz ajándékokkal, Tailwind CSS-sel. GitHub Pages-re készen." />
   <style>
-    /* Smooth fade/slide for card transitions */
     .card-enter { opacity: 0; transform: translateY(12px); }
     .card-enter-active { opacity: 1; transform: translateY(0); transition: opacity 250ms ease, transform 250ms ease; }
     .card-exit { opacity: 1; transform: translateY(0); }
     .card-exit-active { opacity: 0; transform: translateY(-12px); transition: opacity 200ms ease, transform 200ms ease; }
-
-    /* Modal fade */
     .modal-fade-enter { opacity: 0; }
     .modal-fade-enter-active { opacity: 1; transition: opacity 200ms ease; }
     .modal-fade-exit { opacity: 1; }
@@ -23,134 +20,80 @@
 <body class="min-h-screen bg-gradient-to-b from-slate-50 to-white text-slate-800">
   <header class="sticky top-0 z-20 border-b border-slate-200 bg-white/80 backdrop-blur">
     <div class="mx-auto max-w-4xl px-4 py-3 flex items-center justify-between">
-      <h1 class="text-xl md:text-2xl font-bold tracking-tight">🧠 Quick 7-Question Quiz</h1>
-      <div id="score" class="text-sm md:text-base font-medium text-slate-600">Score: 0/0</div>
+      <h1 class="text-xl md:text-2xl font-bold tracking-tight">🇭🇺 Magyar Interaktív Kvíz</h1>
+      <div id="score" class="text-sm md:text-base font-medium text-slate-600">Pontszám: 0/0</div>
     </div>
-    <!-- Progress bar -->
     <div class="mx-auto max-w-4xl px-4 pb-3">
       <div class="w-full h-2 rounded-full bg-slate-200 overflow-hidden">
         <div id="progressBar" class="h-full w-0 bg-indigo-500 transition-[width] duration-300 ease-out"></div>
       </div>
-      <div id="progressLabel" class="mt-1 text-xs text-slate-500">0 / 7 answered</div>
+      <div id="progressLabel" class="mt-1 text-xs text-slate-500">0 / 7 megválaszolva</div>
     </div>
   </header>
 
   <main class="mx-auto max-w-4xl px-4 py-8">
-    <div id="cardHost" class=""></div>
+    <div id="cardHost"></div>
 
-    <!-- Final summary screen -->
     <section id="summary" class="hidden">
       <div class="rounded-2xl border border-slate-200 bg-white p-6 md:p-8 shadow-sm">
-        <h2 class="text-2xl font-semibold mb-2">🎉 All done!</h2>
+        <h2 class="text-2xl font-semibold mb-2">🎉 Kész vagy!</h2>
         <p id="finalText" class="text-slate-600 mb-4"></p>
         <div class="flex flex-wrap gap-3">
-          <button id="restartBtn" class="rounded-xl px-4 py-2 bg-indigo-600 text-white font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2">Restart quiz</button>
-          <button id="reviewBtn" class="rounded-xl px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50">Review answers</button>
+          <button id="restartBtn" class="rounded-xl px-4 py-2 bg-indigo-600 text-white font-medium hover:bg-indigo-700">Újrakezdés</button>
+          <button id="reviewBtn" class="rounded-xl px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50">Válaszok megtekintése</button>
         </div>
         <div id="reviewList" class="mt-6 hidden">
-          <h3 class="font-semibold mb-2">Your answers</h3>
+          <h3 class="font-semibold mb-2">Válaszaid</h3>
           <ol id="reviewItems" class="list-decimal pl-5 space-y-2"></ol>
         </div>
       </div>
     </section>
   </main>
 
-  <!-- Feedback Modal -->
-  <div id="modal" class="fixed inset-0 z-30 hidden" aria-hidden="true">
+  <div id="modal" class="fixed inset-0 z-30 hidden">
     <div id="modalBackdrop" class="absolute inset-0 bg-slate-900/50"></div>
     <div class="relative h-full w-full flex items-center justify-center p-4">
-      <div role="dialog" aria-labelledby="modalTitle" aria-modal="true" class="w-full max-w-md rounded-2xl border border-slate-200 bg-white shadow-xl p-6">
+      <div class="w-full max-w-md rounded-2xl border border-slate-200 bg-white shadow-xl p-6">
         <div class="flex items-start gap-3">
           <div id="modalIcon" class="text-2xl">💡</div>
           <div>
-            <h3 id="modalTitle" class="text-xl font-semibold mb-1">Feedback</h3>
-            <p id="modalMessage" class="text-slate-600"></p>
+            <h3 id="modalTitle" class="text-xl font-semibold mb-1">Visszajelzés</h3>
+            <p id="modalMessage" class="text-slate-600 whitespace-pre-line"></p>
           </div>
         </div>
         <div class="mt-6 flex justify-end">
-          <button id="closeModal" class="rounded-xl px-4 py-2 bg-indigo-600 text-white font-medium hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2">Continue</button>
+          <button id="closeModal" class="rounded-xl px-4 py-2 bg-indigo-600 text-white font-medium hover:bg-indigo-700">Tovább</button>
         </div>
       </div>
     </div>
   </div>
 
   <footer class="mx-auto max-w-4xl px-4 pb-10 pt-4 text-xs text-slate-500">
-    Built with ❤️ using Tailwind CSS. Fully client-side — perfect for GitHub Pages.
+    Készült szeretettel Tailwind CSS-sel. Teljesen kliensoldali — tökéletes GitHub Pages-hez.
   </footer>
 
   <script>
-    // ===== Quiz Data =====
     const QUESTIONS = [
-      {
-        title: "Which planet is known as the Red Planet?",
-        description: "A rosy world that roams the skies, \nits rusty hue a cosmic prize.",
-        options: ["Venus", "Mars", "Jupiter", "Mercury"],
-        correctIndex: 1,
-      },
-      {
-        title: "What does CSS stand for?",
-        description: "For styles that flow and layouts bless,\nthis acronym means less to guess.",
-        options: [
-          "Cascading Style Sheets",
-          "Creative Styling Syntax",
-          "Computer Style System",
-          "Colorful Site Skins",
-        ],
-        correctIndex: 0,
-      },
-      {
-        title: "The chemical symbol 'Na' stands for…",
-        description: "Sprinkle it lightly, savory and neat—\na pantry pal that seasons your treat.",
-        options: ["Neon", "Sodium", "Nitrogen", "Nickel"],
-        correctIndex: 1,
-      },
-      {
-        title: "Which language is primarily used for structuring web pages?",
-        description: "Bones of the web, tags in a tree—\nwrap content clean for all to see.",
-        options: ["Python", "HTML", "Java", "C#"],
-        correctIndex: 1,
-      },
-      {
-        title: "In music, how many notes are in a standard major scale?",
-        description: "Do re mi climbs up the slope—\ncount them all to find the scope.",
-        options: ["5", "6", "7", "8"],
-        correctIndex: 2,
-      },
-      {
-        title: "What is the capital of Japan?",
-        description: "Neon nights and temples old—\na city where the future's told.",
-        options: ["Kyoto", "Osaka", "Tokyo", "Sapporo"],
-        correctIndex: 2,
-      },
-      {
-        title: "Which data structure uses FIFO (First In, First Out)?",
-        description: "Line up neat, no need to gripe—\nfirst in the queue is first to swipe.",
-        options: ["Stack", "Queue", "Tree", "Graph"],
-        correctIndex: 1,
-      },
+      { title: "Mit szoktam csinálni esténként, ami idegesít?", description: "Mikor elcsendesül a ház, és a fény is kialszik,\n egy apró hang mégis hallatszik...", options: ["Olvasás", "Éneklés", "Nevetés", "Cuppogás"], correctIndex: 3, reward: "Alvómaszk, hogy jobban aludj." },
+      { title: "Mi a kedvenc desszertem?", description: "Van egy desszert, amitől mindig elolvadok,\n és ha meglátom, máris boldog vagyok.", options: ["Panna cotta", "Somlói galuska", "Tiramisu", "Brownie"], correctIndex: 2, reward: "Illatgyertya" },
+      { title: "Hol volt az első randink?", description: "Ott ültünk ketten, kicsit félénken,\n kávé és nevetés kíséretében.", options: ["Szent Gellért kávézó", "Duna-part", "Margitsziget", "Otthon"], correctIndex: 0, reward: "Isteni finom, premium Bor" },
+      { title: "Melyik napon született Rico?", description: "Egy kis bundás szív, aki öröm és káosz egyszerre.\n De mikor van a nagy napja?", options: ["Október 5", "November 9", "December 1", "Februar 10"], correctIndex: 1, reward: "Rico Plüss" },
+      { title: "Melyik országban voltunk először közösen nyaralni?", description: "Tengerpart, napfény és nevetés,\n ott éreztem először az igazi szerelmet.", options: ["Görögország", "Olaszország", "Spanyolország", "Horvátország"], correctIndex: 0, reward: "Vers, előadja Dr. Don Ricardo Alejandro Junior de Vasquez" },
+      { title: "Mi volt az első közös otthonunk?", description: "Volt egy hely, ahol minden kezdetét vette – kis lakás, de tele szeretettel és nevetéssel. Mi volt az első közös otthonunk neve vagy címe?",options: ["Attila út 61.", "Attila út 85.", "Wekerle Sándor utca 23.", "Kertvárosi körút 15."],correctIndex: 0,reward: "Csokor virág"},
+      { title: "Milyen sportot űzök, és mit csinálok bárkivel, aki bántani akarna téged?", description: "Ha valaki bántani merne téged, tudd, hogy azonnal közbelépek érted. Milyen sportban jártas a te harcos szerelmed?",options: ["Balett", "Box", "Karate", "Foci"],correctIndex: 1,reward: "Sztárbox-jegyek 😜"}
     ];
 
-    // ===== State =====
-    const state = {
-      idx: 0,
-      answered: 0, // number answered (including skipped)
-      correct: 0,
-      selections: Array(QUESTIONS.length).fill(null),
-    };
-
-    // ===== Elements =====
+    const state = { idx: 0, answered: 0, correct: 0, selections: Array(QUESTIONS.length).fill(null) };
     const cardHost = document.getElementById('cardHost');
     const scoreEl = document.getElementById('score');
     const progressEl = document.getElementById('progressBar');
     const progressLabel = document.getElementById('progressLabel');
-
     const modalEl = document.getElementById('modal');
     const modalBackdrop = document.getElementById('modalBackdrop');
     const modalTitle = document.getElementById('modalTitle');
     const modalMsg = document.getElementById('modalMessage');
     const modalIcon = document.getElementById('modalIcon');
     const closeModalBtn = document.getElementById('closeModal');
-
     const summarySection = document.getElementById('summary');
     const finalText = document.getElementById('finalText');
     const restartBtn = document.getElementById('restartBtn');
@@ -158,28 +101,20 @@
     const reviewList = document.getElementById('reviewList');
     const reviewItems = document.getElementById('reviewItems');
 
-    // Accessibility live region for result announcements
-    const live = document.createElement('div');
-    live.setAttribute('aria-live', 'polite');
-    live.className = 'sr-only';
-    document.body.appendChild(live);
-
-    // ===== Helpers =====
     function updateHeader() {
-      scoreEl.textContent = `Score: ${state.correct}/${state.answered}`;
+      scoreEl.textContent = `Pontszám: ${state.correct}/${state.answered}`;
       const pct = (state.answered / QUESTIONS.length) * 100;
       progressEl.style.width = `${pct}%`;
-      progressLabel.textContent = `${state.answered} / ${QUESTIONS.length} answered`;
+      progressLabel.textContent = `${state.answered} / ${QUESTIONS.length} megválaszolva`;
     }
 
     function createCard(q, index) {
       const wrapper = document.createElement('section');
       wrapper.className = 'card card-enter rounded-2xl border border-slate-200 bg-white p-6 md:p-8 shadow-sm';
-
       wrapper.innerHTML = `
         <div class="flex items-center justify-between mb-4">
-          <span class="text-xs font-medium tracking-wider text-indigo-600 uppercase">Question ${index + 1} of ${QUESTIONS.length}</span>
-          <span class="text-xs text-slate-500">Use the dropdown →</span>
+          <span class="text-xs font-medium tracking-wider text-indigo-600 uppercase">Kérdés ${index + 1} / ${QUESTIONS.length}</span>
+          <span class="text-xs text-slate-500">Válaszd ki a helyeset →</span>
         </div>
         <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
           <div>
@@ -187,20 +122,17 @@
             <p class="mt-3 text-slate-600 whitespace-pre-line">${q.description}</p>
           </div>
           <div class="md:pl-6 md:border-l md:border-slate-200 flex flex-col gap-3">
-            <label for="answer" class="text-sm font-medium">Choose your answer</label>
+            <label class="text-sm font-medium">Válassz</label>
             <select id="answer" class="w-full rounded-xl border-slate-300 focus:border-indigo-500 focus:ring-indigo-500">
-              <option value="" disabled selected>Select...</option>
+              <option value="" disabled selected>Válassz...</option>
               ${q.options.map((opt, i) => `<option value="${i}">${opt}</option>`).join('')}
             </select>
-            <button id="skip" class="self-start rounded-xl px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50">Skip question</button>
+            <button id="skip" class="self-start rounded-xl px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50">Kihagyás</button>
           </div>
-        </div>
-      `;
+        </div>`;
 
-      // Attach listeners
       const answerSel = wrapper.querySelector('#answer');
       const skipBtn = wrapper.querySelector('#skip');
-
       answerSel.addEventListener('change', (e) => {
         const chosenIndex = Number(e.target.value);
         state.selections[state.idx] = chosenIndex;
@@ -208,21 +140,15 @@
         if (correct) state.correct += 1;
         state.answered += 1;
         updateHeader();
-        showModal(correct, q.options[q.correctIndex]);
+        showModal(correct, q.options[q.correctIndex], q.reward);
       });
-
       skipBtn.addEventListener('click', () => {
-        state.selections[state.idx] = null; // explicit skip
+        state.selections[state.idx] = null;
         state.answered += 1;
         updateHeader();
-        showModal(null, q.options[q.correctIndex]);
+        showModal(null, q.options[q.correctIndex], q.reward);
       });
-
-      // Animate enter
-      requestAnimationFrame(() => {
-        wrapper.classList.add('card-enter-active');
-      });
-
+      requestAnimationFrame(() => wrapper.classList.add('card-enter-active'));
       return wrapper;
     }
 
@@ -232,10 +158,7 @@
         node.classList.add('card-exit');
         requestAnimationFrame(() => {
           node.classList.add('card-exit-active');
-          setTimeout(() => {
-            node.remove();
-            resolve();
-          }, 220);
+          setTimeout(() => { node.remove(); resolve(); }, 220);
         });
       });
     }
@@ -245,82 +168,51 @@
       const q = QUESTIONS[state.idx];
       const card = createCard(q, state.idx);
       cardHost.appendChild(card);
-      // Focus the dropdown on load for accessibility
-      setTimeout(() => {
-        const sel = card.querySelector('#answer');
-        sel && sel.focus();
-      }, 50);
     }
 
-    function showModal(correct, correctAnswer) {
-      // Set message
-      let title = 'Nice try!';
+    function showModal(correct, correctAnswer, reward) {
+      let title = 'Szép próbálkozás!';
       let icon = '💡';
       let message = '';
-
       if (correct === true) {
-        title = 'Correct!';
+        title = 'Helyes válasz!';
         icon = '✅';
-        message = 'Great job — that\'s the right answer.';
+        message = 'Gratulálok, eltaláltad!';
       } else if (correct === false) {
-        title = 'Incorrect';
+        title = 'Rossz válasz';
         icon = '❌';
-        message = `Not quite. The correct answer is: \n\n${correctAnswer}`;
+        message = `A helyes válasz: ${correctAnswer}`;
       } else {
-        title = 'Skipped';
+        title = 'Kihagytad';
         icon = '⏭️';
-        message = `No worries! The correct answer is: \n\n${correctAnswer}`;
+        message = `A helyes válasz: ${correctAnswer}`;
       }
-
+      if (reward) {
+        message += `\n\n🎁 Ajándékod: ${reward}`;
+      }
       modalTitle.textContent = title;
       modalMsg.textContent = message;
       modalIcon.textContent = icon;
-
-      // Open modal
       modalEl.classList.remove('hidden');
-      modalEl.classList.add('modal-fade-enter');
-      requestAnimationFrame(() => modalEl.classList.add('modal-fade-enter-active'));
       closeModalBtn.focus();
-
-      function closeHandler() {
-        // Close modal with fade
-        modalEl.classList.remove('modal-fade-enter', 'modal-fade-enter-active');
-        modalEl.classList.add('modal-fade-exit');
-        requestAnimationFrame(() => modalEl.classList.add('modal-fade-exit-active'));
-        setTimeout(() => {
-          modalEl.classList.add('hidden');
-          modalEl.classList.remove('modal-fade-exit', 'modal-fade-exit-active');
-          // Announce and go next
-          live.textContent = `${title}. ${message}`;
-          goNext();
-        }, 170);
-        // cleanup listeners
+      const closeHandler = () => {
+        modalEl.classList.add('hidden');
+        goNext();
         closeModalBtn.removeEventListener('click', closeHandler);
         modalBackdrop.removeEventListener('click', closeHandler);
-        window.removeEventListener('keydown', escHandler);
-      }
-
-      function escHandler(e) { if (e.key === 'Escape') closeHandler(); }
-
+      };
       closeModalBtn.addEventListener('click', closeHandler);
       modalBackdrop.addEventListener('click', closeHandler);
-      window.addEventListener('keydown', escHandler);
     }
 
     function goNext() {
       if (state.idx < QUESTIONS.length - 1) {
         const current = cardHost.querySelector('.card');
-        if (current) {
-          teardownCard(current).then(() => {
-            state.idx += 1;
-            renderQuestion();
-          });
-        } else {
+        teardownCard(current).then(() => {
           state.idx += 1;
           renderQuestion();
-        }
+        });
       } else {
-        // End of quiz
         cardHost.innerHTML = '';
         showSummary();
       }
@@ -329,47 +221,32 @@
     function showSummary() {
       summarySection.classList.remove('hidden');
       const total = QUESTIONS.length;
-      const answered = state.answered;
-      const correct = state.correct;
-      finalText.textContent = `You\'ve answered ${correct}/${total} correctly. (${answered}/${total} answered)`;
-
-      // Build review list
+      finalText.textContent = `Összesen ${state.correct}/${total} helyes válasz.`;
       reviewItems.innerHTML = '';
       QUESTIONS.forEach((q, i) => {
         const li = document.createElement('li');
         const sel = state.selections[i];
-        const chosenText = sel === null ? 'Skipped' : (sel === undefined ? '—' : q.options[sel]);
+        const chosenText = sel === null ? 'Kihagyva' : (sel === undefined ? '—' : q.options[sel]);
         const isCorrect = sel === q.correctIndex;
         li.innerHTML = `
           <div class="rounded-lg border ${isCorrect ? 'border-green-300 bg-green-50' : 'border-slate-200 bg-slate-50'} p-3">
             <div class="font-medium">${q.title}</div>
-            <div class="text-sm text-slate-600 mt-1">Your answer: <span class="font-medium">${chosenText}</span></div>
-            <div class="text-sm text-slate-600">Correct answer: <span class="font-medium">${q.options[q.correctIndex]}</span></div>
-          </div>
-        `;
+            <div class="text-sm text-slate-600 mt-1">Válaszod: <span class="font-medium">${chosenText}</span></div>
+            <div class="text-sm text-slate-600">Helyes válasz: <span class="font-medium">${q.options[q.correctIndex]}</span></div>
+            <div class="text-sm text-slate-500 mt-1">Ajándék: ${q.reward}</div>
+          </div>`;
         reviewItems.appendChild(li);
       });
     }
 
     function resetQuiz() {
-      state.idx = 0;
-      state.answered = 0;
-      state.correct = 0;
-      state.selections = Array(QUESTIONS.length).fill(null);
-      updateHeader();
-      summarySection.classList.add('hidden');
-      renderQuestion();
+      state.idx = 0; state.answered = 0; state.correct = 0; state.selections = Array(QUESTIONS.length).fill(null);
+      updateHeader(); summarySection.classList.add('hidden'); renderQuestion();
     }
 
-    // Buttons in summary
     restartBtn.addEventListener('click', resetQuiz);
-    reviewBtn.addEventListener('click', () => {
-      reviewList.classList.toggle('hidden');
-    });
-
-    // Boot
-    updateHeader();
-    renderQuestion();
+    reviewBtn.addEventListener('click', () => reviewList.classList.toggle('hidden'));
+    updateHeader(); renderQuestion();
   </script>
 </body>
 </html>
