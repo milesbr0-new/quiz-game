@@ -74,13 +74,13 @@
 
   <script>
     const QUESTIONS = [
-      { title: "Mit szoktam csinálni esténként, ami idegesít?", description: "Mikor elcsendesül a ház, és a fény is kialszik,\n egy apró hang mégis hallatszik...", options: ["Olvasás", "Éneklés", "Nevetés", "Cuppogás"], correctIndex: 3, reward: "Alvómaszk, hogy jobban aludj." },
       { title: "Mi a kedvenc desszertem?", description: "Van egy desszert, amitől mindig elolvadok,\n és ha meglátom, máris boldog vagyok.", options: ["Panna cotta", "Somlói galuska", "Tiramisu", "Brownie"], correctIndex: 2, reward: "Illatgyertya" },
-      { title: "Hol volt az első randink?", description: "Ott ültünk ketten, kicsit félénken,\n kávé és nevetés kíséretében.", options: ["Szent Gellért kávézó", "Duna-part", "Margitsziget", "Otthon"], correctIndex: 0, reward: "Isteni finom, premium Bor" },
+      { title: "Mit szoktam csinálni esténként, ami idegesít?", description: "Mikor elcsendesül a ház, és a fény is kialszik,\n egy apró hang mégis hallatszik...", options: ["Olvasás", "Éneklés", "Nevetés", "Cuppogás"], correctIndex: 3, reward: "Alvómaszk, hogy jobban aludj." },
       { title: "Melyik napon született Rico?", description: "Egy kis bundás szív, aki öröm és káosz egyszerre.\n De mikor van a nagy napja?", options: ["Október 5", "November 9", "December 1", "Februar 10"], correctIndex: 1, reward: "Rico Plüss" },
+      { title: "Milyen sportot űzök, és mit csinálok bárkivel, aki bántani akarna téged?", description: "Ha valaki bántani merne téged, tudd, hogy azonnal közbelépek érted. Milyen sportban jártas a te harcos szerelmed?",options: ["Balett", "Box", "Karate", "Foci"],correctIndex: 1,reward: "Sztárbox-jegyek 😜"},
+      { title: "Hol volt az első randink?", description: "Ott ültünk ketten, kicsit félénken,\n kávé és nevetés kíséretében.", options: ["Szent Gellért kávézó", "Duna-part", "Margitsziget", "Otthon"], correctIndex: 0, reward: "Isteni finom, premium Bor" },
+      { title: "Mi volt az első közös otthonunk?", description: "Volt egy hely, ahol minden kezdetét vette – kis lakás, de tele szeretettel és nevetéssel. Mi volt az első közös otthonunk neve vagy címe?",options: ["Attila út 61.", "Attila út 85.", "Wekerle Sándor utca 23.", "Kertvárosi körút 15."],correctIndex: 0,reward: "A legfinomabb Nápolyi Pizza"},
       { title: "Melyik országban voltunk először közösen nyaralni?", description: "Tengerpart, napfény és nevetés,\n ott éreztem először az igazi szerelmet.", options: ["Görögország", "Olaszország", "Spanyolország", "Horvátország"], correctIndex: 0, reward: "Vers, előadja Dr. Don Ricardo Alejandro Junior de Vasquez" },
-      { title: "Mi volt az első közös otthonunk?", description: "Volt egy hely, ahol minden kezdetét vette – kis lakás, de tele szeretettel és nevetéssel. Mi volt az első közös otthonunk neve vagy címe?",options: ["Attila út 61.", "Attila út 85.", "Wekerle Sándor utca 23.", "Kertvárosi körút 15."],correctIndex: 0,reward: "Csokor virág"},
-      { title: "Milyen sportot űzök, és mit csinálok bárkivel, aki bántani akarna téged?", description: "Ha valaki bántani merne téged, tudd, hogy azonnal közbelépek érted. Milyen sportban jártas a te harcos szerelmed?",options: ["Balett", "Box", "Karate", "Foci"],correctIndex: 1,reward: "Sztárbox-jegyek 😜"}
     ];
 
       const state = { idx: 0, answered: 0, correct: 0, selections: Array(QUESTIONS.length).fill(null) };
