@@ -1,289 +1,1199 @@
 <!DOCTYPE html>
 <html lang="hu">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Interaktív Kvíz</title>
-  <script src="https://cdn.tailwindcss.com"></script>
-  <meta name="description" content="Egy 7 kérdéses, modern, magyar nyelvű interaktív kvíz ajándékokkal, Tailwind CSS-sel. GitHub Pages-re készen." />
+  <meta charset="UTF-8">
+  <title>FoxHole Okos Otthon</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="FoxHole – új generációs, lokálisan működő okosotthon-platform társasházakhoz és prémium otthonokhoz.">
   <style>
-    .card-enter { opacity: 0; transform: translateY(12px); }
-    .card-enter-active { opacity: 1; transform: translateY(0); transition: opacity 250ms ease, transform 250ms ease; }
-    .card-exit { opacity: 1; transform: translateY(0); }
-    .card-exit-active { opacity: 0; transform: translateY(-12px); transition: opacity 200ms ease, transform 200ms ease; }
-    .modal-fade-enter { opacity: 0; }
-    .modal-fade-enter-active { opacity: 1; transition: opacity 200ms ease; }
-    .modal-fade-exit { opacity: 1; }
-    .modal-fade-exit-active { opacity: 0; transition: opacity 150ms ease; }
+    :root {
+      --bg: #050816;
+      --bg-alt: #0b1020;
+      --accent: #ff7a3c;
+      --accent-soft: rgba(255,122,60,0.12);
+      --accent-strong: #ff9b5f;
+      --text: #f4f4f5;
+      --muted: #a1a1aa;
+      --card-bg: rgba(15,23,42,0.95);
+      --border-subtle: rgba(148,163,184,0.25);
+      --radius-lg: 18px;
+      --radius-xl: 26px;
+      --shadow-soft: 0 18px 45px rgba(15,23,42,0.55);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background: radial-gradient(circle at top, #1f2937 0, #020617 55%, #000 100%);
+      color: var(--text);
+      line-height: 1.6;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    img {
+      max-width: 100%;
+      display: block;
+    }
+
+    .page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* NAVBAR */
+    .nav {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(20px);
+      background: linear-gradient(to bottom, rgba(15,23,42,0.95), rgba(15,23,42,0.8), transparent);
+      border-bottom: 1px solid rgba(148,163,184,0.22);
+    }
+
+    .nav-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      padding: 10px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-logo {
+      width: 36px;
+      height: 36px;
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid rgba(248,250,252,0.18);
+      background: radial-gradient(circle at 30% 0%, #f97316, #fb923c 35%, #020617 80%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .brand-logo img {
+      width: 80%;
+      height: 80%;
+      object-fit: contain;
+    }
+
+    .brand-text-title {
+      font-weight: 600;
+      letter-spacing: 0.08em;
+      font-size: 0.86rem;
+      text-transform: uppercase;
+    }
+
+    .brand-text-sub {
+      font-size: 0.74rem;
+      color: var(--muted);
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 16px;
+      font-size: 0.86rem;
+      color: var(--muted);
+    }
+
+    .nav-links a {
+      padding: 6px 10px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      transition: all 0.18s ease-out;
+      white-space: nowrap;
+    }
+
+    .nav-links a:hover {
+      border-color: rgba(148,163,184,0.45);
+      color: var(--text);
+      background: rgba(15,23,42,0.9);
+    }
+
+    .nav-cta {
+      display: none;
+    }
+
+    @media (min-width: 768px) {
+      .nav-cta {
+        display: inline-flex;
+      }
+    }
+
+    .btn-pill {
+      border-radius: 999px;
+      padding: 8px 16px;
+      border: none;
+      cursor: pointer;
+      font-size: 0.86rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: linear-gradient(135deg, var(--accent), var(--accent-strong));
+      color: #020617;
+      font-weight: 600;
+      box-shadow: 0 15px 35px rgba(248,113,113,0.45);
+      transition: transform 0.1s ease-out, box-shadow 0.1s ease-out, filter 0.1s ease-out;
+    }
+
+    .btn-pill span.icon {
+      font-size: 1.1rem;
+    }
+
+    .btn-pill:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.05);
+      box-shadow: 0 22px 50px rgba(248,113,113,0.6);
+    }
+
+    .btn-pill:active {
+      transform: translateY(0);
+      box-shadow: 0 8px 25px rgba(248,113,113,0.45);
+    }
+
+    /* HERO */
+    .hero {
+      padding: 44px 18px 32px;
+    }
+
+    @media (min-width: 768px) {
+      .hero {
+        padding: 56px 18px 48px;
+      }
+    }
+
+    .hero-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr);
+      gap: 30px;
+    }
+
+    @media (min-width: 900px) {
+      .hero-inner {
+        grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr);
+        align-items: center;
+        gap: 40px;
+      }
+    }
+
+    .hero-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.78rem;
+      padding: 4px 10px 4px 4px;
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.4);
+      background: radial-gradient(circle at 0 0, rgba(248,113,113,0.45), transparent 55%);
+      color: var(--muted);
+      margin-bottom: 14px;
+    }
+
+    .hero-kicker-pill {
+      padding: 4px 9px;
+      border-radius: 999px;
+      background: rgba(15,23,42,0.96);
+      font-weight: 500;
+      font-size: 0.76rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent-strong);
+    }
+
+    .hero-title {
+      font-size: clamp(2.4rem, 3.1vw + 1.6rem, 3.4rem);
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+      margin: 0 0 14px;
+    }
+
+    .hero-title span.highlight {
+      background-image: linear-gradient(120deg, #f97316, #fb923c, #facc15);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero-lead {
+      font-size: 0.98rem;
+      color: var(--muted);
+      max-width: 34rem;
+      margin-bottom: 18px;
+    }
+
+    .hero-badges {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 20px;
+      font-size: 0.78rem;
+    }
+
+    .badge {
+      border-radius: 999px;
+      border: 1px solid rgba(148,163,184,0.4);
+      padding: 5px 10px;
+      background: radial-gradient(circle at 0 0, rgba(148,163,184,0.28), rgba(15,23,42,0.96));
+      color: #e5e7eb;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      white-space: nowrap;
+    }
+
+    .badge-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--accent);
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 24px;
+    }
+
+    .btn-outline {
+      border-radius: 999px;
+      padding: 8px 16px;
+      border: 1px solid rgba(148,163,184,0.55);
+      background: rgba(15,23,42,0.9);
+      color: var(--text);
+      font-size: 0.86rem;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      cursor: pointer;
+      transition: all 0.16s ease-out;
+    }
+
+    .btn-outline:hover {
+      border-color: rgba(248,250,252,0.9);
+      background: rgba(15,23,42,1);
+    }
+
+    .hero-footnote {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      font-size: 0.78rem;
+      color: var(--muted);
+    }
+
+    .hero-footnote strong {
+      color: #e5e7eb;
+    }
+
+    .hero-visual {
+      position: relative;
+    }
+
+    .hero-card {
+      border-radius: var(--radius-xl);
+      padding: 16px 16px 18px;
+      background: radial-gradient(circle at 0 0, rgba(248,113,113,0.2), rgba(15,23,42,0.98));
+      border: 1px solid rgba(148,163,184,0.32);
+      box-shadow: var(--shadow-soft);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 10px;
+    }
+
+    .hero-card-title {
+      font-size: 0.72rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(248,250,252,0.78);
+    }
+
+    .hero-card-chip {
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 0.7rem;
+      background: rgba(15,23,42,0.92);
+      border: 1px solid rgba(148,163,184,0.5);
+      color: var(--muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .hero-card-chip-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 999px;
+      background: #22c55e;
+      box-shadow: 0 0 0 4px rgba(34,197,94,0.4);
+    }
+
+    .hero-visual-main {
+      border-radius: 18px;
+      padding: 12px;
+      background: radial-gradient(circle at 15% 0%, rgba(248,250,252,0.08), rgba(15,23,42,0.98));
+      border: 1px solid rgba(148,163,184,0.38);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-visual-main img {
+      border-radius: 14px;
+      border: 1px solid rgba(15,23,42,0.8);
+      background: #020617;
+    }
+
+    .hero-visual-pill {
+      position: absolute;
+      bottom: 10px;
+      left: 12px;
+      border-radius: 999px;
+      padding: 5px 10px;
+      font-size: 0.72rem;
+      background: rgba(15,23,42,0.92);
+      border: 1px solid rgba(148,163,184,0.6);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--muted);
+    }
+
+    .hero-visual-pill span.dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #facc15;
+    }
+
+    .hero-stat {
+      position: absolute;
+      right: 6px;
+      top: 50%;
+      transform: translateY(-50%);
+      border-radius: 18px;
+      padding: 10px 12px;
+      background: rgba(15,23,42,0.98);
+      border: 1px solid rgba(148,163,184,0.55);
+      font-size: 0.72rem;
+      display: grid;
+      gap: 4px;
+      min-width: 150px;
+    }
+
+    .hero-stat-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      color: var(--muted);
+    }
+
+    .hero-stat-row strong {
+      color: #e5e7eb;
+    }
+
+    .hero-stat-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: rgba(148,163,184,0.9);
+    }
+
+    /* GENERIC LAYOUT */
+    .section {
+      padding: 24px 18px 10px;
+    }
+    .section:last-of-type {
+      padding-bottom: 40px;
+    }
+
+    @media (min-width: 768px) {
+      .section {
+        padding: 32px 18px 12px;
+      }
+    }
+
+    .section-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+    }
+
+    .section-header {
+      margin-bottom: 18px;
+    }
+
+    .section-eyebrow {
+      font-size: 0.78rem;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    .section-title {
+      font-size: 1.36rem;
+      letter-spacing: -0.02em;
+      margin: 0 0 6px;
+    }
+
+    .section-description {
+      font-size: 0.9rem;
+      color: var(--muted);
+      max-width: 36rem;
+    }
+
+    /* FEATURE GRID (brochure blocks) */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: minmax(0,1fr);
+      gap: 14px;
+      margin-bottom: 10px;
+    }
+
+    @media (min-width: 720px) {
+      .feature-grid {
+        grid-template-columns: repeat(3,minmax(0,1fr));
+      }
+    }
+
+    .feature-card {
+      border-radius: var(--radius-lg);
+      padding: 14px 14px 13px;
+      background: radial-gradient(circle at 0 0, rgba(15,23,42,0.96), rgba(15,23,42,0.9));
+      border: 1px solid rgba(148,163,184,0.35);
+      box-shadow: 0 10px 30px rgba(15,23,42,0.7);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .feature-tag {
+      font-size: 0.76rem;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+      color: rgba(148,163,184,0.95);
+      margin-bottom: 4px;
+    }
+
+    .feature-title {
+      font-size: 0.98rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .feature-body {
+      font-size: 0.85rem;
+      color: var(--muted);
+    }
+
+    .feature-icon-pill {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      border-radius: 999px;
+      padding: 4px 9px;
+      font-size: 0.74rem;
+      background: rgba(15,23,42,0.98);
+      border: 1px solid rgba(148,163,184,0.55);
+      color: rgba(148,163,184,0.95);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .feature-icon-pill span.dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 999px;
+      background: var(--accent);
+    }
+
+    /* TWO-COLUMN CONTENT BLOCKS */
+    .split {
+      display: grid;
+      grid-template-columns: minmax(0,1fr);
+      gap: 18px;
+      margin-bottom: 16px;
+    }
+
+    @media (min-width: 880px) {
+      .split {
+        grid-template-columns: minmax(0,1.15fr) minmax(0,0.95fr);
+      }
+    }
+
+    .card {
+      border-radius: var(--radius-lg);
+      padding: 14px 14px 15px;
+      background: linear-gradient(145deg, rgba(15,23,42,0.96), rgba(15,23,42,0.9));
+      border: 1px solid rgba(148,163,184,0.35);
+      box-shadow: var(--shadow-soft);
+      font-size: 0.88rem;
+      color: var(--muted);
+    }
+
+    .card h3 {
+      margin-top: 0;
+      margin-bottom: 6px;
+      font-size: 1rem;
+      color: #e5e7eb;
+    }
+
+    .card p {
+      margin: 0 0 5px;
+    }
+
+    .card-list {
+      margin: 6px 0 0;
+      padding-left: 18px;
+    }
+
+    .card-list li {
+      margin-bottom: 4px;
+    }
+
+    .chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 4px;
+      font-size: 0.78rem;
+    }
+
+    .chip {
+      border-radius: 999px;
+      padding: 3px 10px;
+      border: 1px solid rgba(148,163,184,0.45);
+      background: rgba(15,23,42,0.96);
+      color: var(--muted);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .chip span.dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 999px;
+      background: #22c55e;
+    }
+
+    .pill-heading {
+      font-size: 0.76rem;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: rgba(148,163,184,0.96);
+      margin-bottom: 5px;
+    }
+
+    /* FOOTER */
+    footer {
+      border-top: 1px solid rgba(148,163,184,0.3);
+      margin-top: 16px;
+      padding: 14px 18px 20px;
+      font-size: 0.78rem;
+      color: var(--muted);
+      background: radial-gradient(circle at top, rgba(15,23,42,0.9), #020617);
+    }
+
+    .footer-inner {
+      max-width: 1120px;
+      margin: 0 auto;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .footer-links a {
+      text-decoration: underline;
+      text-decoration-color: rgba(148,163,184,0.55);
+      text-decoration-thickness: 1px;
+      text-underline-offset: 3px;
+    }
+
+    /* SMALL SCROLL HELPER */
+    html {
+      scroll-behavior: smooth;
+    }
   </style>
 </head>
-<body class="min-h-screen bg-gradient-to-b from-slate-50 to-white text-slate-800">
-  <header class="sticky top-0 z-20 border-b border-slate-200 bg-white/80 backdrop-blur">
-    <div class="mx-auto max-w-4xl px-4 py-3 flex items-center justify-between">
-      <h1 class="text-xl md:text-2xl font-bold tracking-tight">4. évforduló - Párkapcsolati Kvíz</h1>
-      <div id="score" class="text-sm md:text-base font-medium text-slate-600">Pontszám: 0/0</div>
-    </div>
-    <div class="mx-auto max-w-4xl px-4 pb-3">
-      <div class="w-full h-2 rounded-full bg-slate-200 overflow-hidden">
-        <div id="progressBar" class="h-full w-0 bg-indigo-500 transition-[width] duration-300 ease-out"></div>
-      </div>
-      <div id="progressLabel" class="mt-1 text-xs text-slate-500">0 / 7 megválaszolva</div>
+<body>
+<div class="page">
+  <!-- NAV -->
+  <header class="nav">
+    <div class="nav-inner">
+      <a href="#top" class="brand">
+        <div class="brand-logo">
+          <!-- Replace with your logo if needed -->
+          <!-- <img src="foxhole_house_white_black_icon_only.png" alt="FoxHole logó"> -->
+          <span style="font-size:1.3rem;">🦊</span>
+        </div>
+        <div>
+          <div class="brand-text-title">FoxHole</div>
+          <div class="brand-text-sub">Lokális okosotthon-platform</div>
+        </div>
+      </a>
+      <nav class="nav-links">
+        <a href="#platform">Platform</a>
+        <a href="#funkciok">Funkciók</a>
+        <a href="#koezpont">Központ</a>
+        <a href="#energia">Energia</a>
+        <a href="#kamera">Biztonság</a>
+      </nav>
+      <a href="#kapcsolat" class="nav-cta">
+        <button class="btn-pill" type="button">
+          <span class="icon">●</span>
+          <span>Ajánlatkérés</span>
+        </button>
+      </a>
     </div>
   </header>
 
-  <main class="mx-auto max-w-4xl px-4 py-8">
-    <div id="cardHost"></div>
+  <!-- HERO -->
+  <main id="top">
+    <section class="hero">
+      <div class="hero-inner">
+        <div>
+          <div class="hero-kicker">
+            <span class="hero-kicker-pill">Nyílt &amp; lokális</span>
+            <span>Okosotthon-platform társasházakhoz és prémium otthonokhoz</span>
+          </div>
+          <h1 class="hero-title">
+            Okosabb és <span class="highlight">biztonságosabb</span> otthon.
+          </h1>
+          <p class="hero-lead">
+            A FoxHole egy új generációs okosotthon-platformot kínál,
+            amely új szintre emeli az otthonautomatizálást.
+            Nem csupán okosotthon – hanem rugalmas, nyílt, skálázható
+            infrastruktúra, amely lokális működésének köszönhetően
+            gyorsabb, biztonságosabb és költséghatékonyabb alternatíva a piacon.
+          </p>
 
-    <section id="summary" class="hidden">
-      <div class="rounded-2xl border border-slate-200 bg-white p-6 md:p-8 shadow-sm">
-        <h2 class="text-2xl font-semibold mb-2">🎉 Kész vagy!</h2>
-        <p id="finalText" class="text-slate-600 mb-4"></p>
-        <div class="flex flex-wrap gap-3">
-          <button id="restartBtn" class="rounded-xl px-4 py-2 bg-indigo-600 text-white font-medium hover:bg-indigo-700">Újrakezdés</button>
-          <button id="reviewBtn" class="rounded-xl px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50">Válaszok megtekintése</button>
+          <div class="hero-badges">
+            <span class="badge">
+              <span class="badge-dot"></span>
+              Márka- és eszközfüggetlen
+            </span>
+            <span class="badge">
+              <span class="badge-dot"></span>
+              Teljesen lokális, felhő nélkül
+            </span>
+            <span class="badge">
+              <span class="badge-dot"></span>
+              Zigbee · Wi-Fi · Z-Wave · Matter · RF433
+            </span>
+          </div>
+
+          <div class="hero-actions">
+            <a href="#funkciok">
+              <button class="btn-pill" type="button">
+                <span class="icon">↓</span>
+                <span>Funkciók áttekintése</span>
+              </button>
+            </a>
+            <a href="#platform">
+              <button class="btn-outline" type="button">
+                Hogyan működik?
+              </button>
+            </a>
+          </div>
+
+          <div class="hero-footnote">
+            <span><strong>Egyetlen alkalmazásból</strong> vezérelhető minden funkció.</span>
+            <span>Mobil, tablet, web, okosóra, autós kijelző, fali érintőkijelző.</span>
+          </div>
         </div>
-        <div id="reviewList" class="mt-6 hidden">
-          <h3 class="font-semibold mb-2">Válaszaid</h3>
-          <ol id="reviewItems" class="list-decimal pl-5 space-y-2"></ol>
+
+        <aside class="hero-visual" aria-hidden="true">
+          <div class="hero-card">
+            <div class="hero-card-header">
+              <div>
+                <div class="hero-card-title">FoxHole Smart Home</div>
+                <div style="font-size:0.76rem;color:var(--muted);">
+                  2D alaprajz-alapú, valós idejű vezérlés
+                </div>
+              </div>
+              <div class="hero-card-chip">
+                <span class="hero-card-chip-dot"></span>
+                <span>Lokális vezérlés</span>
+              </div>
+            </div>
+
+            <div class="hero-visual-main">
+              <!-- Replace with your drawing/render -->
+              <!-- Example: <img src="latvanykep_interconnected_transparentbg.png" alt="FoxHole okos otthon vezérlőfelület"> -->
+              <img src="latvanykep_interconnected_transparentbg.png" alt="FoxHole okosotthon illusztráció">
+
+              <div class="hero-visual-pill">
+                <span class="dot"></span>
+                <span>Szobánként egyedi irányítópult</span>
+              </div>
+
+              <div class="hero-stat">
+                <div class="hero-stat-row">
+                  <span class="hero-stat-label">Zónák</span>
+                  <strong>8+ helyiség</strong>
+                </div>
+                <div class="hero-stat-row">
+                  <span>Világítás</span>
+                  <strong>100% kontroll</strong>
+                </div>
+                <div class="hero-stat-row">
+                  <span>Fűtés &amp; hűtés</span>
+                  <strong>szobánként</strong>
+                </div>
+                <div class="hero-stat-row">
+                  <span>Árnyékolás</span>
+                  <strong>automatikus</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <!-- PLATFORM -->
+    <section class="section" id="platform">
+      <div class="section-inner">
+        <div class="section-header">
+          <div class="section-eyebrow">Platform</div>
+          <h2 class="section-title">Intuitív, testreszabható okosotthon-felület</h2>
+          <p class="section-description">
+            A FoxHole okos otthon szíve egy nyílt forráskódú platform,
+            amely biztonságos, gyors és teljesen lokális irányítást tesz lehetővé.
+            Szinte minden okoseszközzel kompatibilis, támogatja a legfontosabb
+            okosotthon-protokollokat, és egyetlen, egységes alkalmazásból vezérelhető.
+          </p>
+        </div>
+
+        <div class="split">
+          <article class="card">
+            <div class="pill-heading">2D alaprajz-alapú vezérlés</div>
+            <h3>Valós idejű irányítás a teljes otthon felett</h3>
+            <p>
+              A 2D alaprajz-alapú vezérlés lehetővé teszi, hogy valós időben irányítsd
+              otthonod minden helyiségét: egyetlen kattintással vezérelheted
+              a világítást, fűtést, redőnyöket vagy a kameraképet – pontosan ott,
+              ahol épp szükség van rá.
+            </p>
+            <ul class="card-list">
+              <li>Kattintható ikonok minden helyiségben.</li>
+              <li>Szobánként egyedi irányítópult hőmérséklettel, fényekkel, redőnyökkel.</li>
+              <li>Egységes kezelőfelület minden eszközön.</li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <div class="pill-heading">Eszköz- és márkafüggetlen</div>
+            <h3>Nyitott, skálázható infrastruktúra</h3>
+            <p>
+              Márka- és eszközfüggetlen megoldás, amely nem korlátozza
+              a hardverválasztást, így könnyen integrálható új vagy
+              akár meglévő ingatlanportfóliókba.
+            </p>
+            <div class="chip-row">
+              <span class="chip"><span class="dot"></span>Zigbee</span>
+              <span class="chip"><span class="dot"></span>Wi-Fi / LAN</span>
+              <span class="chip"><span class="dot"></span>Z-Wave</span>
+              <span class="chip"><span class="dot"></span>Matter</span>
+              <span class="chip"><span class="dot"></span>RF 433&nbsp;MHz</span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- FUNKCIÓK – from brochure blocks -->
+    <section class="section" id="funkciok">
+      <div class="section-inner">
+        <div class="section-header">
+          <div class="section-eyebrow">Funkciók</div>
+          <h2 class="section-title">A FoxHole rendszer fő funkciói</h2>
+          <p class="section-description">
+            A FoxHole összefogja az otthon vagy társasház legfontosabb funkcióit:
+            világítás, árnyékolás, fűtés-hűtés, energiafelügyelet, kamerák és kaputelefon –
+            mindezt egyetlen, átlátható felületen.
+          </p>
+        </div>
+
+        <div class="feature-grid">
+          <article class="feature-card">
+            <div class="feature-icon-pill">
+              <span class="dot"></span>
+              <span>Központ</span>
+            </div>
+            <div class="feature-tag">Vezérlés</div>
+            <h3 class="feature-title">Stabil, kis fogyasztású központi egység</h3>
+            <p class="feature-body">
+              Az okosotthon stabil, energiahatékony „agya”,
+              amely összefogja az egész rendszer működését
+              – egy kis dobozban a teljes vezérlés.
+            </p>
+          </article>
+
+          <article class="feature-card">
+            <div class="feature-icon-pill">
+              <span class="dot"></span>
+              <span>Komfort</span>
+            </div>
+            <div class="feature-tag">Hőmérséklet</div>
+            <h3 class="feature-title">Okosabb termosztát</h3>
+            <p class="feature-body">
+              Helyiségenként szabályozható hőmérséklet a maximális komfort és
+              energiahatékonyság érdekében – padlófűtéssel, klímával és
+              elektromos vízmelegítővel integrálva.
+            </p>
+          </article>
+
+          <article class="feature-card">
+            <div class="feature-icon-pill">
+              <span class="dot"></span>
+              <span>Biztonság</span>
+            </div>
+            <div class="feature-tag">Megfigyelés</div>
+            <h3 class="feature-title">Kamerák &amp; kaputelefon</h3>
+            <p class="feature-body">
+              Közvetlen hozzáférés a kapucsengőhöz és a helyi kamerák képéhez.
+              Az élőképek biztonságosan, lokálisan jelennek meg a vezérlőfelületen.
+            </p>
+          </article>
+
+          <article class="feature-card">
+            <div class="feature-icon-pill">
+              <span class="dot"></span>
+              <span>Energia</span>
+            </div>
+            <div class="feature-tag">Monitoring</div>
+            <h3 class="feature-title">Energia &amp; napelem</h3>
+            <p class="feature-body">
+              Teljes átláthatóság az energiafogyasztás és a napelemtermelés felett –
+              statisztikákkal, előrejelzésekkel, pillanatnyi állapotokkal.
+            </p>
+          </article>
+
+          <article class="feature-card">
+            <div class="feature-icon-pill">
+              <span class="dot"></span>
+              <span>Fény</span>
+            </div>
+            <div class="feature-tag">Világítás</div>
+            <h3 class="feature-title">Teljes kontroll a fények felett</h3>
+            <p class="feature-body">
+              Hagyományos kapcsolók mögé rejtett okosrelékkel
+              a fények továbbra is vezérelhetők fizikai kapcsolóval,
+              de bármikor elérhetők az alkalmazásból és automatizmusokon keresztül is.
+            </p>
+          </article>
+
+          <article class="feature-card">
+            <div class="feature-icon-pill">
+              <span class="dot"></span>
+              <span>Árnyék</span>
+            </div>
+            <div class="feature-tag">Árnyékolás</div>
+            <h3 class="feature-title">Intelligens redőnyök és árnyékolók</h3>
+            <p class="feature-body">
+              Redőnyök és árnyékolók intelligens irányítása RF vagy relés megoldással –
+              egyszerűen, megbízhatóan, automatizált jelenetekkel és időzítésekkel.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- KÖZPONT / HARDVER -->
+    <section class="section" id="koezpont">
+      <div class="section-inner">
+        <div class="section-header">
+          <div class="section-eyebrow">Központi egység</div>
+          <h2 class="section-title">FoxHole központ – a rendszer agya</h2>
+          <p class="section-description">
+            Minden vezérlési logika egy stabil, kis fogyasztású központi egységen fut,
+            amely biztosítja az okosotthon megbízható, internetfüggetlen működését.
+          </p>
+        </div>
+
+        <div class="split">
+          <article class="card">
+            <div class="pill-heading">Hardver specifikációk</div>
+            <h3>Teljesítmény kompakt méretben</h3>
+            <ul class="card-list">
+              <li>CPU: Quad-core ARM Cortex-A55 1.8 GHz (Rockchip RK3566)</li>
+              <li>RAM: 4 GB LPDDR4</li>
+              <li>Tárhely: 32 GB eMMC (bővíthető USB-n keresztül)</li>
+              <li>Operációs rendszer: Home Assistant OS</li>
+              <li>Tipikus fogyasztás: ~5 W, halk és megbízható működés</li>
+            </ul>
+            <p style="margin-top:6px;">
+              A teljes helyi vezérlés felhő nélkül valósul meg – az adatok az otthonban maradnak.
+            </p>
+          </article>
+
+          <article class="card">
+            <div class="pill-heading">Kapcsolódás</div>
+            <h3>Protokollok &amp; szabványok</h3>
+            <p>
+              A központ többféle okosotthon-protokollal is képes kommunikálni,
+              így vegyes eszközkörnyezetben is egységes vezérlést biztosít.
+            </p>
+            <ul class="card-list">
+              <li>Zigbee</li>
+              <li>Wi-Fi &amp; Ethernet (LAN)</li>
+              <li>Z-Wave</li>
+              <li>Matter</li>
+              <li>Bluetooth</li>
+              <li>RF 433&nbsp;MHz (pl. redőnymotorokhoz)</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- HŐMÉRSÉKLET + VILÁGÍTÁS & ÁRNYÉKOLÁS -->
+    <section class="section">
+      <div class="section-inner">
+        <div class="section-header">
+          <div class="section-eyebrow">Komfort</div>
+          <h2 class="section-title">Hőmérséklet, fények, árnyék – mind egy felületen</h2>
+          <p class="section-description">
+            A hőmérséklet-szabályozás, a világítás és az árnyékolás együtt dolgozik
+            a kényelemért és az energiahatékonyságért.
+          </p>
+        </div>
+
+        <div class="split">
+          <article class="card">
+            <div class="pill-heading">Hőmérséklet-szabályzás</div>
+            <h3>Szobánkénti vezérlés – padlófűtéstől a klímáig</h3>
+            <p>
+              A hőmérséklet-szabályozás egyszerre rugalmas és energiatakarékos.
+              Rejtett relék vagy kijelzős termosztátok segítségével szobánként
+              vezérelhető a fűtés, míg nyitásérzékelők automatizálják
+              a hőmérséklet-szabályzást – ott, ahol és amikor szükséges.
+            </p>
+            <ul class="card-list">
+              <li>Padlófűtés vezérlése okosrelékkel.</li>
+              <li>Daikin klímák integrált irányítása.</li>
+              <li>Elektromos vízmelegítő vezérlése és fogyasztás-követése.</li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <div class="pill-heading">Világítás &amp; árnyékolás</div>
+            <h3>Okos relék a hagyományos kapcsolók mögött</h3>
+            <p>
+              A hagyományos kapcsolók mögé okos reléket telepítünk, így a világítás
+              és az árnyékolás továbbra is vezérelhető marad fizikai kapcsolóval –
+              miközben bármikor elérhető az alkalmazásban is.
+            </p>
+            <p>
+              Az RF-motoros redőnyöket Wi-Fi-n keresztül vezérelhető
+              433&nbsp;MHz-es adó/vevő egységgel okosítjuk fel,
+              teljes integrációval a rendszerbe.
+            </p>
+            <ul class="card-list">
+              <li>Jelenetek, időzítések, fényhangulatok.</li>
+              <li>Automatizmusok mozgás vagy napszak alapján.</li>
+              <li>„Fizikai + appos” vezérlés kompromisszumok nélkül.</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- ENERGIA -->
+    <section class="section" id="energia">
+      <div class="section-inner">
+        <div class="section-header">
+          <div class="section-eyebrow">Energia</div>
+          <h2 class="section-title">Teljes átláthatóság fogyasztás és termelés felett</h2>
+          <p class="section-description">
+            A FoxHole valós időben monitorozza az otthonba be- és kimenő energiát,
+            valamint a napelemek által termelt teljesítményt. Így a fogyasztás és a termelés
+            könnyen átlátható, elemezhető, optimalizálható.
+          </p>
+        </div>
+
+        <div class="split">
+          <article class="card">
+            <div class="pill-heading">Fogyasztáskövetés</div>
+            <h3>Okoseszközökből érkező adatok</h3>
+            <p>
+              Az energiafogyasztás több forrásból követhető: a Daikin légkondicionáló,
+              a padlófűtés és az elektromos vízmelegítő is jelenti az energiahasználatát,
+              a napelemes rendszer monitoring stickje rögzíti a termelést,
+              míg egy dedikált energiamérő eszköz pontosan méri a hálózatból felvett
+              és oda visszatáplált áram mennyiségét.
+            </p>
+          </article>
+
+          <article class="card">
+            <div class="pill-heading">Statisztikák &amp; optimalizáció</div>
+            <h3>Adatalapú döntések az otthonban</h3>
+            <p>
+              A rendszer statisztikákat, előrejelzéseket és pillanatnyi betekintést
+              biztosít az energiafogyasztás teljes hálózatára – segítve az
+              energiahatékonysági döntéseket, időzítéseket és automatizmusokat.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- KAMERÁK & KAPUTELEFON -->
+    <section class="section" id="kamera">
+      <div class="section-inner">
+        <div class="section-header">
+          <div class="section-eyebrow">Biztonság</div>
+          <h2 class="section-title">Kamerák &amp; kaputelefon az okosotthon felületén</h2>
+          <p class="section-description">
+            A FoxHole rendszer lehetővé teszi, hogy az épület közös IP kamerái –
+            például a kaputelefon vagy lépcsőházi kamerák – közvetlenül megjelenjenek
+            az okosotthon felületén.
+          </p>
+        </div>
+
+        <div class="split">
+          <article class="card">
+            <div class="pill-heading">Lokális videó</div>
+            <h3>RTSP-alapú kamerahálózat integrációja</h3>
+            <p>
+              A rendszer meglévő, RTSP-alapú kamerahálózatra épül,
+              így az élőképek biztonságosan, lokálisan jelennek meg
+              a Home Assistant felületén – akár dedikált fali tableten is.
+            </p>
+          </article>
+
+          <article class="card">
+            <div class="pill-heading">Hozzáférés &amp; biztonság</div>
+            <h3>Jogosultságkezelés, proxy, belső hálózat</h3>
+            <p>
+              A hozzáférés korlátozásához proxy RTSP szerver használata ajánlott,
+              így a kameraadatok kizárólag a belső hálózaton belül maradnak.
+              A lakók csak a saját felületükhöz és eszközeikhez férnek hozzá.
+            </p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- SZENZOROK -->
+    <section class="section">
+      <div class="section-inner">
+        <div class="section-header">
+          <div class="section-eyebrow">Szenzorok</div>
+          <h2 class="section-title">Érzékelők, amelyekre építhetők az automatizmusok</h2>
+          <p class="section-description">
+            A FoxHole rugalmasan integrál különböző szenzorokat, amelyek együtt
+            okos automatikákat hoznak létre a kényelem és biztonság érdekében.
+          </p>
+        </div>
+
+        <div class="split">
+          <article class="card">
+            <div class="pill-heading">Alap szenzorok</div>
+            <h3>Adat minden helyiségből</h3>
+            <ul class="card-list">
+              <li>Hőmérséklet- és páratartalom-szenzorok.</li>
+              <li>Nyitásérzékelők ablakokra és ajtókra.</li>
+              <li>Mozgásérzékelők világításhoz és riasztáshoz.</li>
+              <li>Fényérzékelők az árnyékolás finomhangolásához.</li>
+            </ul>
+          </article>
+
+          <article class="card">
+            <div class="pill-heading">Kombinált működés</div>
+            <h3>Okos automatizmusok több adat alapján</h3>
+            <ul class="card-list">
+              <li>Az ablaknyitás érzékelése automatikusan kikapcsolhatja a fűtést/hűtést.</li>
+              <li>A klíma hőmérsékletérzékelője segíti a szellőztetés szabályozását.</li>
+              <li>A mozgásérzékelők a világítás automatizálására és riasztásra is használhatók.</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- KAPCSOLAT / LÁBLÉC-BLOKK -->
+    <section class="section" id="kapcsolat">
+      <div class="section-inner">
+        <div class="section-header">
+          <div class="section-eyebrow">Kapcsolat</div>
+          <h2 class="section-title">Érdekel a FoxHole okosotthon?</h2>
+          <p class="section-description">
+            A FoxHole ideális társasházak, lakóparkok és prémium otthonok számára.
+            Kérj bemutatót vagy ajánlatot, és nézd meg, hogyan működik élőben a rendszer.
+          </p>
+        </div>
+
+        <div class="card">
+          <h3>Lépj velünk kapcsolatba</h3>
+          <p>
+            Itt kerül majd a konkrét elérhetőség, űrlap vagy e-mail cím.
+            A statikus oldalhoz elegendő például:
+          </p>
+          <ul class="card-list">
+            <li>E-mail: <a href="mailto:info@foxhole.example">info@foxhole.example</a></li>
+            <li>Telefon: +36 30 123 4567</li>
+          </ul>
+          <p style="margin-top:6px;">
+            A fenti adatok helyére írd be a saját elérhetőségeidet.
+          </p>
         </div>
       </div>
     </section>
   </main>
 
-  <div id="modal" class="fixed inset-0 z-30 hidden">
-    <div id="modalBackdrop" class="absolute inset-0 bg-slate-900/50"></div>
-    <div class="relative h-full w-full flex items-center justify-center p-4">
-      <div class="w-full max-w-md rounded-2xl border border-slate-200 bg-white shadow-xl p-6">
-        <div class="flex items-start gap-3">
-          <div id="modalIcon" class="text-2xl">💡</div>
-          <div>
-            <h3 id="modalTitle" class="text-xl font-semibold mb-1">Visszajelzés</h3>
-            <p id="modalMessage" class="text-slate-600 whitespace-pre-line"></p>
-          </div>
-        </div>
-        <div class="mt-6 flex justify-end">
-          <button id="closeModal" class="rounded-xl px-4 py-2 bg-indigo-600 text-white font-medium hover:bg-indigo-700">Tovább</button>
-        </div>
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-inner">
+      <div>© <span id="year"></span> FoxHole – Minden jog fenntartva.</div>
+      <div class="footer-links">
+        <a href="#top">Vissza az elejére</a>
+        <a href="#platform">Platform</a>
+        <a href="#funkciok">Funkciók</a>
       </div>
     </div>
-  </div>
-
-  <footer class="mx-auto max-w-4xl px-4 pb-10 pt-4 text-xs text-slate-500">
-    Készült szeretettel Ricsitől, Noéminek, a 4. évfordulójukra.
   </footer>
+</div>
 
-  <script>
-    const QUESTIONS = [
-      { title: "Mi a kedvenc desszertem?", description: "Van egy desszert, amitől mindig elolvadok,\n és ha meglátom, máris boldog vagyok.", options: ["Panna cotta", "Somlói galuska", "Tiramisu", "Brownie"], correctIndex: 2, reward: "Illatgyertya" },
-      { title: "Mit szoktam csinálni esténként, ami idegesít?", description: "Mikor elcsendesül a ház, és a fény is kialszik,\n egy apró hang mégis hallatszik...", options: ["Olvasás", "Éneklés", "Nevetés", "Cuppogás"], correctIndex: 3, reward: "Alvómaszk, hogy jobban aludj." },
-      { title: "Melyik napon született Rico?", description: "Egy kis bundás szív, aki öröm és káosz egyszerre.\n De mikor van a nagy napja?", options: ["Október 5", "November 9", "December 1", "Februar 10"], correctIndex: 1, reward: "Rico Plüss" },
-      { title: "Milyen sportot űzök, és mit csinálok bárkivel, aki bántani akarna téged?", description: "Ha valaki bántani merne téged, tudd, hogy azonnal közbelépek érted. Milyen sportban jártas a te harcos szerelmed?",options: ["Balett", "Box", "Karate", "Foci"],correctIndex: 1,reward: "Sztárbox-jegyek 😜"},
-      { title: "Hol volt az első randink?", description: "Ott ültünk ketten, kicsit félénken,\n kávé és nevetés kíséretében.", options: ["Szent Gellért kávézó", "Duna-part", "Margitsziget", "Otthon"], correctIndex: 0, reward: "Isteni finom, premium Bor" },
-      { title: "Mi volt az első közös otthonunk?", description: "Volt egy hely, ahol minden kezdetét vette – kis lakás, de tele szeretettel és nevetéssel. Mi volt az első közös otthonunk neve vagy címe?",options: ["Attila út 61.", "Attila út 85.", "Wekerle Sándor utca 23.", "Kertvárosi körút 15."],correctIndex: 0,reward: "A legfinomabb Nápolyi Pizza"},
-      { title: "Melyik országban voltunk először közösen nyaralni?", description: "Tengerpart, napfény és nevetés,\n ott éreztem először az igazi szerelmet.", options: ["Görögország", "Olaszország", "Spanyolország", "Horvátország"], correctIndex: 0, reward: "Vers, előadja Dr. Don Ricardo Alejandro Junior de Vasquez" },
-    ];
-
-      const state = { idx: 0, answered: 0, correct: 0, selections: Array(QUESTIONS.length).fill(null) };
-  const cardHost = document.getElementById('cardHost');
-  const scoreEl = document.getElementById('score');
-  const progressEl = document.getElementById('progressBar');
-  const progressLabel = document.getElementById('progressLabel');
-  const modalEl = document.getElementById('modal');
-  const modalBackdrop = document.getElementById('modalBackdrop');
-  const modalTitle = document.getElementById('modalTitle');
-  const modalMsg = document.getElementById('modalMessage');
-  const modalIcon = document.getElementById('modalIcon');
-  const closeModalBtn = document.getElementById('closeModal');
-  const summarySection = document.getElementById('summary');
-  const finalText = document.getElementById('finalText');
-  const restartBtn = document.getElementById('restartBtn');
-  const reviewBtn = document.getElementById('reviewBtn');
-  const reviewList = document.getElementById('reviewList');
-  const reviewItems = document.getElementById('reviewItems');
-
-  let timerInterval = null;
-  const QUESTION_TIME = 10; // seconds
-
-  function updateHeader() {
-    scoreEl.textContent = `Pontszám: ${state.correct}/${state.answered}`;
-    const pct = (state.answered / QUESTIONS.length) * 100;
-    progressEl.style.width = `${pct}%`;
-    progressLabel.textContent = `${state.answered} / ${QUESTIONS.length} megválaszolva`;
-  }
-
-  function createCard(q, index) {
-    const wrapper = document.createElement('section');
-    wrapper.className = 'card card-enter rounded-2xl border border-slate-200 bg-white p-6 md:p-8 shadow-sm';
-
-    wrapper.innerHTML = `
-      <div class="flex items-center justify-between mb-4">
-        <span class="text-xs font-medium tracking-wider text-indigo-600 uppercase">
-          Kérdés ${index + 1} / ${QUESTIONS.length}
-        </span>
-        <span id="countdown" class="text-xs text-slate-500">⏳ 10s</span>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 items-start">
-        <div>
-          <h2 class="text-xl md:text-2xl font-semibold">${q.title}</h2>
-          <p class="mt-3 text-slate-600 whitespace-pre-line">${q.description}</p>
-        </div>
-        <div class="md:pl-6 md:border-l md:border-slate-200 flex flex-col gap-3">
-          <label class="text-sm font-medium">Válassz</label>
-          <select id="answer" class="w-full rounded-xl border-slate-300 focus:border-indigo-500 focus:ring-indigo-500">
-            <option value="" disabled selected>Válassz...</option>
-            ${q.options.map((opt, i) => `<option value="${i}">${opt}</option>`).join('')}
-          </select>
-          <button id="skip" class="self-start rounded-xl px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50">Kihagyás</button>
-          <div class="w-full h-2 bg-slate-200 rounded-full overflow-hidden">
-            <div id="timeBar" class="h-full bg-indigo-500 w-full transition-[width] duration-1000 ease-linear"></div>
-          </div>
-        </div>
-      </div>`;
-
-    const answerSel = wrapper.querySelector('#answer');
-    const skipBtn = wrapper.querySelector('#skip');
-    const countdownEl = wrapper.querySelector('#countdown');
-    const timeBar = wrapper.querySelector('#timeBar');
-
-    let remaining = QUESTION_TIME;
-
-    function updateTimer() {
-      remaining--;
-      countdownEl.textContent = `⏳ ${remaining}s`;
-      timeBar.style.width = `${(remaining / QUESTION_TIME) * 100}%`;
-
-      if (remaining <= 0) {
-        clearInterval(timerInterval);
-        state.selections[state.idx] = null;
-        state.answered += 1;
-        updateHeader();
-        showModal(null, q.options[q.correctIndex], q.reward);
-      }
-    }
-
-    timerInterval = setInterval(updateTimer, 1000);
-
-    answerSel.addEventListener('change', (e) => {
-      clearInterval(timerInterval);
-      const chosenIndex = Number(e.target.value);
-      state.selections[state.idx] = chosenIndex;
-      const correct = chosenIndex === q.correctIndex;
-      if (correct) state.correct += 1;
-      state.answered += 1;
-      updateHeader();
-      showModal(correct, q.options[q.correctIndex], q.reward);
-    });
-
-    skipBtn.addEventListener('click', () => {
-      clearInterval(timerInterval);
-      state.selections[state.idx] = null;
-      state.answered += 1;
-      updateHeader();
-      showModal(null, q.options[q.correctIndex], q.reward);
-    });
-
-    requestAnimationFrame(() => wrapper.classList.add('card-enter-active'));
-    return wrapper;
-  }
-
-  function teardownCard(node) {
-    return new Promise((resolve) => {
-      node.classList.remove('card-enter', 'card-enter-active');
-      node.classList.add('card-exit');
-      requestAnimationFrame(() => {
-        node.classList.add('card-exit-active');
-        setTimeout(() => { node.remove(); resolve(); }, 220);
-      });
-    });
-  }
-
-  function renderQuestion() {
-    clearInterval(timerInterval);
-    cardHost.innerHTML = '';
-    const q = QUESTIONS[state.idx];
-    const card = createCard(q, state.idx);
-    cardHost.appendChild(card);
-  }
-
-
-    function showModal(correct, correctAnswer, reward) {
-      let title = 'Szép próbálkozás!';
-      let icon = '💡';
-      let message = '';
-      if (correct === true) {
-        title = 'Helyes válasz!';
-        icon = '✅';
-        message = 'Gratulálok, eltaláltad!';
-        if (reward) {
-        message += `\n\n🎁 Ajándékod: ${reward}`;
-      }
-      } else if (correct === false) {
-        title = 'Rossz válasz';
-        icon = '❌';
-        message = `A helyes válasz: ${correctAnswer}`;
-      } else {
-        title = 'Kihagytad';
-        icon = '⏭️';
-        message = `A helyes válasz: ${correctAnswer}`;
-      }
-      
-      modalTitle.textContent = title;
-      modalMsg.textContent = message;
-      modalIcon.textContent = icon;
-      modalEl.classList.remove('hidden');
-      closeModalBtn.focus();
-      const closeHandler = () => {
-        modalEl.classList.add('hidden');
-        goNext();
-        closeModalBtn.removeEventListener('click', closeHandler);
-        modalBackdrop.removeEventListener('click', closeHandler);
-      };
-      closeModalBtn.addEventListener('click', closeHandler);
-      modalBackdrop.addEventListener('click', closeHandler);
-    }
-
-    function goNext() {
-      if (state.idx < QUESTIONS.length - 1) {
-        const current = cardHost.querySelector('.card');
-        teardownCard(current).then(() => {
-          state.idx += 1;
-          renderQuestion();
-        });
-      } else {
-        cardHost.innerHTML = '';
-        showSummary();
-      }
-    }
-
-    function showSummary() {
-      summarySection.classList.remove('hidden');
-      const total = QUESTIONS.length;
-      finalText.textContent = `Összesen ${state.correct}/${total} helyes válasz.`;
-      reviewItems.innerHTML = '';
-      QUESTIONS.forEach((q, i) => {
-        const li = document.createElement('li');
-        const sel = state.selections[i];
-        const chosenText = sel === null ? 'Kihagyva' : (sel === undefined ? '—' : q.options[sel]);
-        const isCorrect = sel === q.correctIndex;
-        li.innerHTML = `
-          <div class="rounded-lg border ${isCorrect ? 'border-green-300 bg-green-50' : 'border-slate-200 bg-slate-50'} p-3">
-            <div class="font-medium">${q.title}</div>
-            <div class="text-sm text-slate-600 mt-1">Válaszod: <span class="font-medium">${chosenText}</span></div>
-            <div class="text-sm text-slate-600">Helyes válasz: <span class="font-medium">${q.options[q.correctIndex]}</span></div>
-            <div class="text-sm text-slate-500 mt-1">Ajándék: ${q.reward}</div>
-          </div>`;
-        reviewItems.appendChild(li);
-      });
-    }
-
-    function resetQuiz() {
-      state.idx = 0; state.answered = 0; state.correct = 0; state.selections = Array(QUESTIONS.length).fill(null);
-      updateHeader(); summarySection.classList.add('hidden'); renderQuestion();
-    }
-
-    restartBtn.addEventListener('click', resetQuiz);
-    reviewBtn.addEventListener('click', () => reviewList.classList.toggle('hidden'));
-    updateHeader(); renderQuestion();
-  </script>
+<script>
+  // dinamikus évszám
+  document.getElementById('year').textContent = new Date().getFullYear();
+</script>
 </body>
 </html>
