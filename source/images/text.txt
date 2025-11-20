@@ -1,0 +1,122 @@
+Új generációs okosotthon mindenkinek
+
+Magyar fejlesztésű, nyílt, márkafüggetlen rendszer – egyetlen lakástól a teljes társasházig.
+
+A FoxHome egy olyan okosotthon-megoldás, amely Home Assistant alapokra épül, de professzionális tervezéssel, kivitelezéssel és folyamatos támogatással egészül ki. Teljesen helyben működik, nem függ a felhőtől, mégis biztonságosan eléred távolról is – mobilról, böngészőből, autódból vagy az okosórádról.
+
+Miért más, mint a tipikus okosotthon?
+Nyílt és márkafüggetlen
+
+Nem zár be egyetlen gyártó ökoszisztémájába. Széles körben támogatott eszközökkel és protokollokkal dolgozunk, például:
+Zigbee · Wi-Fi · Bluetooth · RF 433 MHz · Z-Wave · Matter
+Így a rendszered együtt tud működni szinte bármilyen okoseszközzel – a meglévőkkel is.
+
+Teljesen helyi, mégis távolról is elérhető
+
+A vezérlés és az adatok helyben maradnak, nincsen felhő, ezért:
+
+gyors
+
+biztonságos és privát
+
+internet nélkül is működik
+
+Ugyanakkor biztonságos, titkosított csatornán keresztül bárhonnan eléred az otthonod.
+
+Home Assistant alapokon – profi kivitelben
+
+Az egész megoldás a nyílt forráskódú Home Assistant platformra épül, amit mi:
+
+megtervezünk (villamos, hálózati, automatizációs szinten)
+
+kivitelezünk (hardver + szoftver)
+
+felügyelünk és támogatunk (monitoring, karbantartás, bővítések)
+
+Skálázható: az önálló otthontól a teljes társasházig
+Társasházi funkciók
+
+Kaputelefon elérés a FoxHome appból – otthonról és távolról
+
+Rendszámfelismerés alapú kapunyitás
+
+Távoli ajtó- és kapunyitás jogosultságokkal, valamint NFC-s ajtónyitás telefonnal – csak érintsd oda a mobilodat, és a rendszer biztonságosan azonosít, mintha egy digitális kulcs lenne a zsebedben
+
+Központi értesítések közgyűlésről, eseményekről, karbantartásokról
+
+Otthoni vezérlés – minden, ami számít
+Világítás
+
+Megbízható világításvezérlés
+
+Személyre szabható, előre beállítható fényjelenetek
+
+Cirkadián ritmust követő fényvezérlés, amely a nap természetes fényét utánozva energizál reggel, fókuszt ad napközben és melegebb tónusokkal segít ellazulni estére
+
+Árnyékolás
+
+Redőnyök, zsalúziák, napellenzők
+
+Időjárás- és napszakfüggő automatikus pozícióvezérlés
+
+HVAC
+
+Intelligens, helyiségenkénti hőmérsékletszabályzás
+
+Padlófűtés, radiátor, hőszivattyú és klíma teljes körű integráció
+
+A rendszer monitorozza, mennyi energiát használ a fűtés és hűtés – így pontos képet kapsz otthonod energiahatékonyságáról
+
+Automatizmusokkal beállítható, mikor és mennyit fűtsön vagy hűtsön a rendszer
+
+Optimalizált működés: kényelmes hőmérséklet kevesebb energiafelhasználással
+
+Biztonság
+
+Minden kamerád egyetlen, átlátható központi felületen követhető
+
+A riasztórendszer integrálható: távolról élesíthető és hatástalanítható
+
+Valós idejű értesítések, ha bármi történik
+
+Minden videó és napló helyben tárolódik, nem kerül felhőbe – az adataid a tieid
+
+Wellness
+
+Jakuzzi vagy akár szauna is integrálható az okosotthon rendszerbe
+
+Távolról indíthatod, előmelegítheted vagy kikapcsolhatod – hazaérkezésre minden készen vár
+
+Folyamatos állapotfigyelés: hőmérséklet, vízkezelés, szűrő, keringetés, energiafogyasztás
+
+Teljes kontroll egyetlen felületen – a saját otthoni wellness mindig pont olyan, amilyennek szeretnéd
+
+Energiagazdálkodás
+
+Egyedi eszköz- és körfogyasztás mérése
+
+Villanyóra közvetlen adatainak olvasása (ha támogatott)
+
+Napelemes inverter integráció
+
+Termelés–fogyasztás riportok
+
+Automatizmusok energiaár vagy termelés alapján
+
+Minden eszközön, mindenhol veled
+
+Az okos otthon felület elérhető:
+
+iOS és Android telefonokon
+
+Böngészőből
+
+Okosóráról
+
+Android Auto és CarPlay rendszereken
+
+Vedd fel velünk a kapcsolatot
+
+Szeretnél valóban okos, biztonságos és jövőálló otthont vagy társasházat?
+
+Kapcsolatfelvétel – írj nekünk, és segítünk a számodra legjobb FoxHome megoldást kialakítani.
